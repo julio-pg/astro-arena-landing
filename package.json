@@ -1,0 +1,26 @@
+{
+  "name": "astro-arena-landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rsbuild build",
+    "dev": "rsbuild dev --open",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.2.0",
+    "three": "^0.174.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@rsbuild/core": "^1.2.8",
+    "@rsbuild/plugin-react": "^1.1.0",
+    "@types/react": "^19.0.9",
+    "@types/react-dom": "^19.0.3",
+    "@types/three": "^0.174.0",
+    "typescript": "^5.7.3"
+  }
+}
