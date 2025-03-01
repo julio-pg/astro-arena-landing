@@ -16,11 +16,11 @@ function Skybox() {
 	useEffect(() => {
 		const loader = new CubeTextureLoader();
 		const texture = loader.load([
-			"/images/space-bg.jpg", // Right
-			"/images/space-bg.jpg", // Left
-			"/images/space-bg.jpg", // Top
-			"/images/space-bg.jpg", // Bottom
-			"/images/space-bg.jpg", // Front
+			"/images/sky-bg.jpg", // Right
+			"/images/sky-bg.jpg", // Left
+			"/images/sky-bg.jpg", // Top
+			"/images/sky-bg.jpg", // Bottom
+			"/images/sky-bg.jpg", // Front
 			"/images/space-bg.jpg", // Back
 		]);
 		scene.background = texture;

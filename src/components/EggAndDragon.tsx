@@ -35,8 +35,10 @@ export default function EggAndDragon() {
 				},
 			);
 			// Heartbeat animation for the egg
-			const scale = 1.5 + Math.sin(state.clock.elapsedTime * 5) * 0.1; // Adjust speed and intensity
-			eggRef.current.scale.set(scale, scale, scale);
+			const scale = 1.5 + Math.sin(state.clock.elapsedTime * 2) * 0.1; // Adjust speed and intensity
+			if (eggOpacity !== 0) {
+				eggRef.current.scale.set(scale, scale, scale);
+			}
 		}
 	});
 	return (
