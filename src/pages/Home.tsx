@@ -1,50 +1,76 @@
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { ScrollControls, useGLTF, useScroll } from "@react-three/drei";
+import { Suspense, useEffect } from "react";
+import { CubeTextureLoader } from "three";
+import EggAndDragon from "@/components/EggAndDragon";
 
-const Home = () => {
-	const mountRef = useRef(null);
+// Load the GLB model
+function MainModel({ url }: { url: string }) {
+	const { scene } = useGLTF(url);
+	return <primitive object={scene} position={[0, -3, -0.7]} scale={2} />;
+}
 
+// Set up the skybox
+function Skybox() {
+	const { scene } = useThree();
 	useEffect(() => {
-		// Scene, Camera, Renderer
-		const scene = new THREE.Scene();
-		const camera = new THREE.PerspectiveCamera(
-			75,
-			window.innerWidth / window.innerHeight,
-			0.1,
-			1000,
-		);
-		const renderer = new THREE.WebGLRenderer();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		mountRef.current.appendChild(renderer.domElement);
+		const loader = new CubeTextureLoader();
+		const texture = loader.load([
+			"/images/space-bg.jpg", // Right
+			"/images/space-bg.jpg", // Left
+			"/images/space-bg.jpg", // Top
+			"/images/space-bg.jpg", // Bottom
+			"/images/space-bg.jpg", // Front
+			"/images/space-bg.jpg", // Back
+		]);
+		scene.background = texture;
+	}, [scene]);
 
-		// Geometry, Material, Mesh
-		const geometry = new THREE.BoxGeometry();
-		const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-		const cube = new THREE.Mesh(geometry, material);
-		scene.add(cube);
+	return null;
+}
+function ScrollRotation() {
+	const { camera } = useThree();
+	const scroll = useScroll();
 
-		camera.position.z = 5;
+	useFrame(() => {
+		// Define the orbit radius and height
+		const radius = 5; // Distance from the egg
+		const height = 2; // Height of the camera
 
-		// Animation Loop
-		const animate = () => {
-			requestAnimationFrame(animate);
+		// Calculate the camera's position in polar coordinates
+		const angle = -scroll?.offset * Math.PI * 2 + Math.PI / 2; // Full rotation (0 to 2π)
+		camera.position.x = radius * Math.cos(angle); // X position
+		camera.position.z = radius * Math.sin(angle); // Z position
+		camera.position.y = height; // Y position (height)
 
-			cube.rotation.x += 0.01;
-			cube.rotation.y += 0.01;
+		// Make the camera look at the egg (centered at [0, 0, 0])
+		camera.lookAt(-0.3, 0.5, -1);
+	});
 
-			renderer.render(scene, camera);
-		};
+	return null;
+}
+const Home = () => {
+	return (
+		<>
+			<title>Astro Arena</title>
+			<Canvas style={{ width: "100%", height: "100vh" }}>
+				<ScrollControls pages={2}>
+					<Skybox />
+					<ambientLight intensity={3} />
+					<pointLight position={[0, 0.5, 1]} intensity={20} color="#fff" />
+					<pointLight position={[0, 0.5, -3]} intensity={20} color="#fff" />
+					<pointLight position={[2, 0.5, 0]} intensity={20} color="#fff" />
+					<pointLight position={[-2, 0.5, 0]} intensity={20} color="#fff" />
+					<Suspense fallback={null}>
+						<MainModel url="/assets/FutureStage.glb" />
 
-		animate();
-
-		// Cleanup on unmount
-		return () => {
-			mountRef.current.removeChild(renderer.domElement);
-		};
-	}, []);
-
-	return <div ref={mountRef} />;
-	// return <div>test</div>;
+						<EggAndDragon />
+					</Suspense>
+					<ScrollRotation />
+				</ScrollControls>
+			</Canvas>
+		</>
+	);
 };
 
 export default Home;
